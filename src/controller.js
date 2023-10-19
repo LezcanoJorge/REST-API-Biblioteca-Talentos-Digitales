@@ -22,5 +22,11 @@ async getOne(req, res) {
       res.status(500).json({ error: 'Error al obtener el libro' });
     }
   }
+  async delete(req, res){
+    const persona = req.body;
+    const [result] = await pool.query(`DELETE FROM Personas WHERE id=(?)`, [persona.id]);
+    resjson({"Registros eliminados":result.affectedRows});
+  }
+
 }
 export const libros = new LibroController();
