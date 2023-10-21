@@ -10,7 +10,8 @@ async getAll(req, res){
 async add(req, res) {
   try {
       const libros = req.body;
-      if (!libros.nombre || !libros.autor || !libros.isbn) {throw new Error("Faltan atributos obligatorios en la solicitud");
+      if (!libros.nombre || !libros.autor || !libros.isbn) {
+          throw new Error("Faltan atributos obligatorios en la solicitud");
       }
       const [result] = await pool.query(`INSERT INTO libros(nombre, autor, categoria, anopublicacion, isbn) VALUES (?,?,?,?,?)`,[libros.nombre, libros.autor, libros.categoria, libros.anopublicacion, libros.isbn]);
       res.json({ "Id insertado": result.insertId });
@@ -43,11 +44,24 @@ async getOne(req, res) {
     }
   }
   
-
-  async update(req, res){
+  async update(req, res) {
     const libros = req.body;
-    const [result] = await pool.query(`UPDATE libros SET nombre=(?), autor=(?), categoria=(?), anopublicacion=(?), isbn=(?) WHERE id=(?)`, [libros.nombre, libros.autor, libros.categoria, libros.anopublicacion, libros.isbn, libros.id,]);
-    res.json({"Registros actualizados": result.affectedRows});
+    try {
+      const [result] = await pool.query(
+        'UPDATE libros SET nombre = ?, autor = ?, categoria = ?, anopublicacion = ?, isbn = ? WHERE id = ?',
+        [libros.nombre, libros.autor, libros.categoria, libros.anopublicacion, libros.isbn, libros.id]
+      );
+  
+      if (result.affectedRows > 0) {
+        res.json({ "Registros actualizados": result.affectedRows });
+      } else {
+        res.json({ "Registros actualizados": 0, error: 'ID no encontrado' });
+      }
+    } catch (error) {
+      console.error('Error al actualizar el libro:', error);
+      res.status(500).json({ error: 'Error al actualizar el libro' });
+    }
   }
+  
 }
 export const libros = new LibroController();
