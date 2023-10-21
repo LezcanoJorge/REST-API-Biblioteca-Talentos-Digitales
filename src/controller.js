@@ -2,11 +2,13 @@ import {pool} from './database.js';
 
 class LibroController{
 
+//obtener toda la lista de usuarios 
 async getAll(req, res){
     const [result]= await pool.query ('SELECT * FROM libros');
     res.json(result)
 
 }
+//Crear usuarios 
 async add(req, res) {
   try {
       const libros = req.body;
@@ -19,6 +21,7 @@ async add(req, res) {
       res.status(400).json({ error: error.message });
   }
 }
+//obtener solo un usuario 
 async getOne(req, res) {
     const id = req.params.id;
     try {
@@ -29,6 +32,7 @@ async getOne(req, res) {
       res.status(500).json({ error: 'Error al obtener el libro' });
     }
   }
+  //eliminar usuario por isbn usuarios 
   async delete(req, res) {
     const libros = req.body;
     try {
@@ -44,6 +48,7 @@ async getOne(req, res) {
     }
   }
   
+  //actualizar datos de usuarios 
   async update(req, res) {
     const libros = req.body;
     try {
