@@ -23,15 +23,15 @@ async getOne(req, res) {
     }
   }
   async delete(req, res){
-    const persona = req.body;
-    const [result] = await pool.query(`DELETE FROM Personas WHERE id=(?)`, [persona.id]);
+    const libros = req.body;
+    const [result] = await pool.query(`DELETE FROM libros WHERE id=(?)`, [libros.id]);
     resjson({"Registros eliminados":result.affectedRows});
   }
 
   async update(req, res){
     const libros = req.body;
-    const [result] = await pool.query(`UPDATE libros SET nombre=(?) autor=(?) , categoria=(?) , anopublicacion=(?) , isbn=(?)`, [libros.nombre, libros.autor, libros.categoria, libros.anopublicacion, libros.isbn]);
-    res.json({"Registros actualizados": result.changedRows});
+    const [result] = await pool.query(`UPDATE libros SET nombre=(?) autor=(?) , categoria=(?) , anopublicacion=(?) , isbn=(?) WHERE id=(?)`, [libros.nombre, libros.autor, libros.categoria, libros.anopublicacion, libros.isbn, libros.id,]);
+    res.json({"Registros actualizados": result.affectedRows});
   }
 }
 export const libros = new LibroController();
